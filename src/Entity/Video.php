@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Videos
+ * Video
  *
  * @ORM\Table(name="videos", indexes={@ORM\Index(name="fk_posts_users_idx", columns={"user_id"})})
  * @ORM\Entity
  */
-class Videos
+class Video
 {
     /**
      * @var int
@@ -64,9 +64,9 @@ class Videos
     private $updatedAt = 'NULL';
 
     /**
-     * @var \Users
+     * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
@@ -150,12 +150,12 @@ class Videos
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 
