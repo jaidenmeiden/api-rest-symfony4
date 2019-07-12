@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="videos", indexes={@ORM\Index(name="fk_posts_users_idx", columns={"user_id"})})
  * @ORM\Entity
  */
-class Video
+class Video implements \JsonSerializable
 {
     /**
      * @var int
@@ -160,6 +160,17 @@ class Video
         $this->user = $user;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'url' => $this->url,
+            'status' => $this->status,
+        ];
     }
 
 

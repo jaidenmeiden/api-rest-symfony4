@@ -7,7 +7,15 @@ user:
     path: /user
     controller: App\Controller\UserController::index
 
+user_lista:
+    path: /user/lista
+    controller: App\Controller\UserController::lista
+
 #Rutas para el controlador video
 video:
   path: /video
   controller: App\Controller\VideoController::index
+
+video_lista:
+  path: /video/lista
+  controller: App\Controller\VideoController::lista
