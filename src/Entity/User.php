@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * User
@@ -83,6 +85,16 @@ class User
      * @ORM\Column(name="remember_token", type="string", length=255, nullable=true, options={"default"="NULL"})
      */
     private $rememberToken = 'NULL';
+
+    /**
+     *  @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="user")
+     */
+    private $videos;
+
+    public function __construct()
+    {
+        $this->videos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
