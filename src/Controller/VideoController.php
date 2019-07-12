@@ -10,7 +10,7 @@ use App\Entity\Video;
 
 class VideoController extends AbstractController
 {
-    public function responseJson($data) {
+    public function responseJsonPersonalizado($data) {
         //Serializar datos con servicio serializer
         $json = $this->get('serializer')->serialize($data, 'json');
 
@@ -40,7 +40,7 @@ class VideoController extends AbstractController
 
         $videos = $video_repo->findAll();
 
-        return $this->responseJson($videos);
+        return $this->responseJsonPersonalizado($videos);
     }
 
     public function show()
@@ -49,7 +49,7 @@ class VideoController extends AbstractController
 
         $video = $video_repo->find(1);
 
-        return $this->responseJson($video);
+        return $this->responseJsonPersonalizado($video);
     }
 
 

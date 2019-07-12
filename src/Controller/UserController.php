@@ -5,12 +5,13 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\User;
 use App\Entity\Video;
 
 class UserController extends AbstractController
 {
-    public function responseJson($data) {
+    public function responseJsonPersonalizado($data) {
         //Serializar datos con servicio serializer
         $json = $this->get('serializer')->serialize($data, 'json');
 
@@ -41,7 +42,7 @@ class UserController extends AbstractController
 
         $users = $user_repo->findAll();
 
-        return $this->responseJson($users);
+        return $this->responseJsonPersonalizado($users);
     }
 
     public function show()
@@ -50,17 +51,22 @@ class UserController extends AbstractController
 
         $user = $user_repo->find(1);
 
-        return $this->responseJson($user);
+        return $this->responseJsonPersonalizado($user);
     }
 
     public function create(Request $request) {
         //Recorger los datos por POST
+        $json = $request->get('json', null);
+
         //Decodificar el Json
+        $params = json_decode($json);//Objeto
+        
         //Respuesta por defecto
         $data = [
             'status' => 'error',
             'code' => 400,
             'message' => 'El usuario no se ha creado',
+            'json' => $params,
         ];
 
         //Comprobar y validad datos
@@ -69,7 +75,6 @@ class UserController extends AbstractController
         //Comprobar si el suario existe (duplicados)}
         //Si no existe, guardar
         //Crear respuesta en JSON
-        return $this->responseJson($data);
-
+        return new JsonResponse($data);
     }
 }
