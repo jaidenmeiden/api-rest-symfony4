@@ -11,6 +11,15 @@ user_lista:
     path: /user/lista
     controller: App\Controller\UserController::lista
 
+user_show:
+    path: /user/show
+    controller: App\Controller\UserController::show
+
+user_create:
+  path: /user/create
+  controller: App\Controller\UserController::create
+  methods: [POST]
+
 #Rutas para el controlador video
 video:
   path: /video
@@ -19,3 +28,7 @@ video:
 video_lista:
   path: /video/lista
   controller: App\Controller\VideoController::lista
+
+video_show:
+  path: /video/show
+  controller: App\Controller\VideoController::show

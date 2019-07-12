@@ -43,5 +43,14 @@ class VideoController extends AbstractController
         return $this->responseJson($videos);
     }
 
+    public function show()
+    {
+        $video_repo = $this->getDoctrine()->getRepository(Video::class);
+
+        $video = $video_repo->find(1);
+
+        return $this->responseJson($video);
+    }
+
 
 }

@@ -40,8 +40,36 @@ class UserController extends AbstractController
         $user_repo = $this->getDoctrine()->getRepository(User::class);
 
         $users = $user_repo->findAll();
+
+        return $this->responseJson($users);
+    }
+
+    public function show()
+    {
+        $user_repo = $this->getDoctrine()->getRepository(User::class);
+
         $user = $user_repo->find(1);
 
         return $this->responseJson($user);
+    }
+
+    public function create(Request $request) {
+        //Recorger los datos por POST
+        //Decodificar el Json
+        //Respuesta por defecto
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'El usuario no se ha creado',
+        ];
+
+        //Comprobar y validad datos
+        //Si la validación es correcta, crear el objeto usuario
+        //Cifrar la contraseña
+        //Comprobar si el suario existe (duplicados)}
+        //Si no existe, guardar
+        //Crear respuesta en JSON
+        return $this->responseJson($data);
+
     }
 }
