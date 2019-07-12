@@ -1,0 +1,8 @@
+#En el archivo .env en la raiz colocar en el espacio que corresponda, la siguiente configuración:
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pruebaslaravel
+DB_USERNAME=root
+DB_PASSWORD=null
