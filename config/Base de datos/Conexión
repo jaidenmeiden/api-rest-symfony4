@@ -1,8 +1,9 @@
 #En el archivo .env en la raiz colocar en el espacio que corresponda, la siguiente configuración:
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=pruebaslaravel
-DB_USERNAME=root
-DB_PASSWORD=null
+DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+
+#Conexión sin contraseña:
+DATABASE_URL=mysql://root@127.0.0.1:3306/pruebassymfony4
+
+#Conexión con contraseña:
+DATABASE_URL=mysql://root:secreto237@127.0.0.1:3306/pruebassymfony4
