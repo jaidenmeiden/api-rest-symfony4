@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\Email;
 
 use App\Entity\User;
 use App\Entity\Video;
+use App\Services\JwtAuthService;
 
 class UserController extends AbstractController
 {
@@ -130,7 +131,7 @@ class UserController extends AbstractController
         return new JsonResponse($data);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request, JwtAuthService $jwt_auth_service) {
         //Recorger los datos por POST
         $json = $request->get('json', null);
 
@@ -155,14 +156,14 @@ class UserController extends AbstractController
                 new Email()
             ]);
 
-            if(!empty($email) && count($validate_email) == 0 && !empty($password) && !empty($getToken)) {
+            if(!empty($email) && count($validate_email) == 0 && !empty($password)) {
                 //Cifrar la contraseña
                 $pwd = hash('sha256', $password);
 
 
                 //Si todos el valido, devuelve un token o un objeto
                 //Si deveulve bien los datos se da una respuesta
-                $data['message'] = 'Entro!';
+                $data['message'] = $jwt_auth_service->signupp();
             } else {
                 $data['message'] = 'Validación incorrecta';
             }
