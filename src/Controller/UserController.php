@@ -91,19 +91,36 @@ class UserController extends AbstractController
                 $user->setEmail($email);
                 $user->setRole('ROLE_USER');
                 $user->setCreatedAt(new \DateTime('now'));
+                $user->setUpdatedAt(new \DateTime('now'));
 
                 //Cifrar la contraseña
                 $pwd = hash('sha256', $password);
                 $user->setPassword($pwd);
 
-                //Comprobar si el suario existe (duplicados)}
+                //Comprobar si el suario existe (duplicados)
+                $doctrine = $this->getDoctrine();
+                $em = $doctrine->getManager();
+
+                $user_repo = $doctrine->getRepository(User::class);
+                $isset_user = $user_repo->findBy(array(
+                   'email' => $email
+                ));
+
                 //Si no existe, guardar
-                $data = [
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Validación correcta',
-                    'objeto' => $user
-                ];
+                if(count($isset_user) == 0) {
+                    //Guardar usuario
+                    $em->persist($user);
+                    $em->flush();
+
+                    $data = [
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Usuario creado correctamente',
+                        'user' => $user
+                    ];
+                } else {
+                    $data['message'] = 'El usuario ya existe!';
+                }
             } else {
                 $data['message'] = 'Validación incorrecta';
             }
