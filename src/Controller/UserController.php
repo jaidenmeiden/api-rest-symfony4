@@ -212,21 +212,45 @@ class UserController extends AbstractController
 
             //Comprobar y validador los datos
             if(!empty($json)) {
+                $name = (isset($params->name)) ? $params->name : null;
+                $surname = (isset($params->surname)) ? $params->surname : null;
+                $email = (isset($params->email)) ? $params->email : null;
 
+                $validator = Validation::createValidator();
+                $validate_email = $validator->validate($email, [
+                    new Email()
+                ]);
+
+                if(!empty($email) && count($validate_email) == 0 && !empty($name) && !empty($surname)) {
+                    //Asignar nuevos datos
+                    $user->setName($name);
+                    $user->setSurname($surname);
+                    $user->setEmail($email);
+                    $user->setUpdatedAt(new \DateTime('now'));
+
+                    //Comprobar los duplicados
+                    $isset_user = $user_repo->findBy([
+                       'email' => $email
+                    ]);
+
+                    if(count($isset_user) == 0 || strcasecmp($identity->email, $email) == 0) {
+                        //Almacenar cambios
+                        $em->persist($user);
+                        $em->flush();
+
+                        //Array por defecto para devolver
+                        $data = [
+                            'status' => 'sussess',
+                            'code' => 200,
+                            'message' => 'Usuario actualizado',
+                            'user' => $user
+                        ];
+                    } else {
+                        $data['message'] = 'No puedes usar ese email';
+                    }
+                }
             }
-            //Asignar nuevos datos
-            //Comprobar los duplicados
-            //Almacenar cambios
         }
-
-        //Array por defecto para devolver
-        $data = [
-            'status' => 'error',
-            'code' => 400,
-            'message' => 'Método update',
-            'token' => $token,
-            'checkToken' => $checkToken
-        ];
 
         //Crear respuesta en JSON
         return $this->responseJsonPersonalizado($data);
