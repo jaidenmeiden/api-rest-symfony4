@@ -59,7 +59,7 @@ class JwtAuthService {
         return $data;
     }
 
-    public function checkToken($jwt) {
+    public function checkToken($jwt, $identity = false) {
         $auth = false;
 
         try {
@@ -67,6 +67,10 @@ class JwtAuthService {
 
             if(isset($decoded) && !empty($decoded) && is_object($decoded) && isset($decoded->sub)) {
                 $auth = !$auth;
+            }
+
+            if($identity) {
+                $auth = $decoded;
             }
         }
         catch (\UnexpectedValueException $e) {}

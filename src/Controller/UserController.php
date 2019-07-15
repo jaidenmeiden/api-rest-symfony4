@@ -184,14 +184,36 @@ class UserController extends AbstractController
         //Crear un método para comprobar si el token es correcto
         $checkToken = $jwt_auth_service->checkToken($token);
 
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Usuario no actualizado'
+        ];
+
         //Si es correcto, hacer la actualización del usuario
         if($checkToken) {
-            //Actualizar al usuario
             //Conseguir el entity manager
+            $doctrine = $this->getDoctrine();
+            $em = $doctrine->getManager();
+
             //Conseguir los datos de usuario identificado
+            $identity = $jwt_auth_service->checkToken($token, true);
+
             //Conseguir actualizar completo
+            $user_repo = $doctrine->getRepository(User::class);
+            $user = $user_repo->findOneBy(array(
+                'id' => $identity->sub
+            ));
+
             //Recoger los datos por POST
-            //Comrpobar y validador los datos
+            $json = $request->get('json', null);
+            $params = json_decode($json);//Objeto
+
+            //Comprobar y validador los datos
+            if(!empty($json)) {
+
+            }
             //Asignar nuevos datos
             //Comprobar los duplicados
             //Almacenar cambios
