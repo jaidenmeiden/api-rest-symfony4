@@ -160,16 +160,20 @@ class UserController extends AbstractController
                 //Cifrar la contraseña
                 $pwd = hash('sha256', $password);
 
+                //Devolver token o datos
+                if($getToken) {
+                    $signup = $jwt_auth_service->signup($params->email, $pwd, $getToken);
+                } else {
+                    $signup = $jwt_auth_service->signup($params->email, $pwd);
+                }
 
-                //Si todos el valido, devuelve un token o un objeto
-                //Si deveulve bien los datos se da una respuesta
-                $data['message'] = $jwt_auth_service->signupp();
+                return new JsonResponse($signup);
             } else {
                 $data['message'] = 'Validación incorrecta';
             }
         }
 
         //Crear respuesta en JSON
-        return new JsonResponse($data);
+        return $this->responseJsonPersonalizado($data);
     }
 }
