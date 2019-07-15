@@ -5,8 +5,13 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Validation;
+
 use App\Entity\User;
 use App\Entity\Video;
+use App\Services\JwtAuthService;
 
 class VideoController extends AbstractController
 {
@@ -52,5 +57,15 @@ class VideoController extends AbstractController
         return $this->responseJsonPersonalizado($video);
     }
 
+    public function create(Request $request, JwtAuthService $jwt_auth_service) {
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'El video no se ha creado'
+        ];
 
+        //Crear respuesta en JSON
+        return $this->responseJsonPersonalizado($data);
+    }
 }

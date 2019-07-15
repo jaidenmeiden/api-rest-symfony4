@@ -42,3 +42,8 @@ video_lista:
 video_show:
   path: /video/show
   controller: App\Controller\VideoController::show
+
+video_create:
+  path: /video/create
+  controller: App\Controller\VideoController::create
+  methods: [POST]
