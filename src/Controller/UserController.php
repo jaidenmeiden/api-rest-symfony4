@@ -84,20 +84,31 @@ class UserController extends AbstractController
             ]);
 
             if(!empty($email) && count($validate_email) == 0 && !empty($name) && !empty($surname) && !empty($password)) {
+                //Si la validación es correcta, crear el objeto usuario
+                $user = new User();
+                $user->setName($name);
+                $user->setSurname($surname);
+                $user->setEmail($email);
+                $user->setRole('ROLE_USER');
+                $user->setCreatedAt(new \DateTime('now'));
+
+                //Cifrar la contraseña
+                $pwd = hash('sha256', $password);
+                $user->setPassword($pwd);
+
+                //Comprobar si el suario existe (duplicados)}
+                //Si no existe, guardar
                 $data = [
                     'status' => 'success',
                     'code' => 200,
-                    'message' => 'Validación correcta'
+                    'message' => 'Validación correcta',
+                    'objeto' => $user
                 ];
             } else {
                 $data['message'] = 'Validación incorrecta';
             }
         }
 
-        //Si la validación es correcta, crear el objeto usuario
-        //Cifrar la contraseña
-        //Comprobar si el suario existe (duplicados)}
-        //Si no existe, guardar
         //Crear respuesta en JSON
         return new JsonResponse($data);
     }
