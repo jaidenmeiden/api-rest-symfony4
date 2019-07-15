@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validation;
 
+use Knp\Component\Pager\PaginatorInterface;
+
 use App\Entity\User;
 use App\Entity\Video;
 use App\Services\JwtAuthService;
@@ -39,13 +41,51 @@ class VideoController extends AbstractController
         ]);
     }
 
-    public function lista()
-    {
-        $video_repo = $this->getDoctrine()->getRepository(Video::class);
+    public function list(Request $request, JwtAuthService $jwt_auth_service, PaginatorInterface $paginator) {
+        //Recoger la cabecera de autentificación}
+        $token = $request->headers->get('Authorization');
+        $checkToken = $jwt_auth_service->checkToken($token);
 
-        $videos = $video_repo->findAll();
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'No se puede realizar la consulta'
+        ];
 
-        return $this->responseJsonPersonalizado($videos);
+        //Si es correcto, hacer la actualización del usuario
+        if ($checkToken) {
+            //Conseguir los datos de usuario identificado
+            $identity = $jwt_auth_service->checkToken($token, true);
+
+            //Conseguir el entity manager
+            $doctrine = $this->getDoctrine();
+            $em = $doctrine->getManager();
+
+            $dql = "SELECT v from App\Entity\Video v WHERE v.user = {$identity->sub} ORDER BY v.id DESC";
+            $query = $em->createQuery($dql);
+
+            //Recoger el parametro page de la url
+            $page = $request->query->getInt('page', 1);
+            $items_per_page = 5;
+
+            //Invocar paginación
+            $pagination = $paginator->paginate($query, $page, $items_per_page);
+            $total = $pagination->getTotalItemCount();
+
+            $data = [
+                'status' => 'success',
+                'code' => 200,
+                'total_items_count' => $total,
+                'page_actual' => $page,
+                'items_per_page' => $items_per_page,
+                'total_pages' => ceil($total / $items_per_page),
+                'videos' => $pagination,
+                'user_id' => $identity->sub
+            ];
+        }
+
+        return $this->responseJsonPersonalizado($data);
     }
 
     public function show()

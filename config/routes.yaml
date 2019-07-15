@@ -35,9 +35,9 @@ video:
   path: /video
   controller: App\Controller\VideoController::index
 
-video_lista:
-  path: /video/lista
-  controller: App\Controller\VideoController::lista
+video_list:
+  path: /video/list
+  controller: App\Controller\VideoController::list
 
 video_show:
   path: /video/show
