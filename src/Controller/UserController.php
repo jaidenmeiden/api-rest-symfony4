@@ -176,4 +176,21 @@ class UserController extends AbstractController
         //Crear respuesta en JSON
         return $this->responseJsonPersonalizado($data);
     }
+
+    public function edit(Request $request, JwtAuthService $jwt_auth_service) {
+        //Recoger la cabecera de atutentificación
+        //Crear un método para comprobar si el token es correcto
+        //Si es correcto, hacer la actualización del usuario
+        //...
+
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Método uodate'
+        ];
+
+        //Crear respuesta en JSON
+        return $this->responseJsonPersonalizado($data);
+    }
 }
