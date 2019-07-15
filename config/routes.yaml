@@ -20,6 +20,11 @@ user_create:
   controller: App\Controller\UserController::create
   methods: [POST]
 
+user_login:
+  path: /user/login
+  controller: App\Controller\UserController::login
+  methods: [POST]
+
 #Rutas para el controlador video
 video:
   path: /video
