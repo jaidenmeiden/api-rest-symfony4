@@ -164,4 +164,21 @@ class VideoController extends AbstractController
         //Crear respuesta en JSON
         return $this->responseJsonPersonalizado($data);
     }
+    
+    public function detail(Request $request, JwtAuthService $jwt_auth_service, $id = null) {
+        //Obtener el token y comprobar si es correcto
+        //Obtener la identificación de usuario
+        //Obtener el video con respecto al ID
+        //Comprobar si el vidoe existe y es propiedad del usuario
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Video no encontrado',
+            'id' => $id
+        ];
+
+        //DEvolver una respuesta
+        return $this->responseJsonPersonalizado($data);
+    }
 }
