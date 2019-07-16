@@ -53,3 +53,8 @@ video_create:
   path: /video/create
   controller: App\Controller\VideoController::create
   methods: [POST]
+
+video_remove:
+  path: /video/remove/{id}
+  controller: App\Controller\VideoController::remove
+  methods: [DELETE]

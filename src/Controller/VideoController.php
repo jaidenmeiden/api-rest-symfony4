@@ -206,4 +206,49 @@ class VideoController extends AbstractController
         //DEvolver una respuesta
         return $this->responseJsonPersonalizado($data);
     }
+
+    public function remove(Request $request, JwtAuthService $jwt_auth_service, $id = null) {
+        //Obtener el token y comprobar si es correcto
+        $token = $request->headers->get('Authorization');
+        $checkToken = $jwt_auth_service->checkToken($token);
+
+        //Array por defecto para devolver
+        $data = [
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Video no encontrado',
+            'id' => $id
+        ];
+
+        //Si es correcto, hacer la actualización del usuario
+        if ($checkToken) {
+            //Obtener la identificación de usuario
+            $identity = $jwt_auth_service->checkToken($token, true);
+
+            //Obtener el video con respecto al ID
+            $doctrine = $this->getDoctrine();
+            $em = $doctrine->getManager();
+
+            $video_repo = $doctrine->getRepository(Video::class);
+            $video = $video_repo->findOneBy(array(
+                'id' => $id
+            ));
+
+            //Comprobar si el video existe y es propiedad del usuario
+            if($video && is_object($video) && $identity->sub == $video->getUser()->getId()) {
+                $em->remove($video);
+                $em->flush();
+
+                $data = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Video eliminado',
+                    'video' => $video
+                ];
+            }
+        }
+
+        //Devolver una respuesta
+        return $this->responseJsonPersonalizado($data);
+    }
 }
