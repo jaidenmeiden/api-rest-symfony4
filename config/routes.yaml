@@ -50,9 +50,14 @@ video_show:
   controller: App\Controller\VideoController::show
 
 video_create:
-  path: /video/create
+  path: /video/new
   controller: App\Controller\VideoController::create
   methods: [POST]
+
+video_edit:
+  path: /video/edit/{id}
+  controller: App\Controller\VideoController::create
+  methods: [PUT]
 
 video_remove:
   path: /video/remove/{id}

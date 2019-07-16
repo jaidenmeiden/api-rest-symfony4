@@ -97,7 +97,7 @@ class VideoController extends AbstractController
         return $this->responseJsonPersonalizado($video);
     }
 
-    public function create(Request $request, JwtAuthService $jwt_auth_service) {
+    public function create(Request $request, JwtAuthService $jwt_auth_service, $id = null) {
         //Recoger la cabecera de autentificación}
         $token = $request->headers->get('Authorization');
         $checkToken = $jwt_auth_service->checkToken($token);
@@ -136,25 +136,48 @@ class VideoController extends AbstractController
                         'id' => $user_id
                     ));
 
-                    //Si la validación es correcta, crear el objeto usuario
-                    $video = new Video();
-                    $video->setUser($user);
-                    $video->setTitle($title);
-                    $video->setDescription($description);
-                    $video->setUrl($url);
-                    $video->setCreatedAt(new \DateTime('now'));
-                    $video->setUpdatedAt(new \DateTime('now'));
-
-                    //Guardar usuario
-                    $em->persist($video);
-                    $em->flush();
-
                     $data = [
                         'status' => 'success',
                         'code' => 200,
-                        'message' => 'Video creado correctamente',
-                        'video' => $video
+                        'message' => 'No fue actualizado'
                     ];
+
+                    //Si la validación es correcta, crear el objeto usuario
+                    $control = false;
+                    if($id == null) {
+                        $video = new Video();
+                        $video->setUser($user);
+                        $video->setStatus(1);
+                        $video->setCreatedAt(new \DateTime('now'));
+
+                        $data['message'] = 'Video creado correctamente';
+                        $control = !$control;
+                    } else {
+                        $video_repo = $doctrine->getRepository(Video::class);
+                        $video = $video_repo->findOneBy(array(
+                            'id' => $id,
+                            'user' => $identity->sub
+                        ));
+
+                        if($video && is_object($video) && $identity->sub == $video->getUser()->getId()) {
+                            $data['message'] = 'Video actualizado correctamente';
+                            $control = !$control;
+                        } else {
+                            $data['message'] = 'Video no existe';
+                        }
+                    }
+                    if($control) {
+                        $video->setTitle($title);
+                        $video->setDescription($description);
+                        $video->setUrl($url);
+                        $video->setUpdatedAt(new \DateTime('now'));
+
+                        //Guardar usuario
+                        $em->persist($video);
+                        $em->flush();
+
+                        $data['video'] = $video;
+                    }
                 } else {
                     $data['message'] = 'Validación incorrecta';
                 }
@@ -185,7 +208,6 @@ class VideoController extends AbstractController
 
             //Obtener el video con respecto al ID
             $doctrine = $this->getDoctrine();
-            $em = $doctrine->getManager();
 
             $video_repo = $doctrine->getRepository(Video::class);
             $video = $video_repo->findOneBy(array(
