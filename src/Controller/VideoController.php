@@ -164,12 +164,12 @@ class VideoController extends AbstractController
         //Crear respuesta en JSON
         return $this->responseJsonPersonalizado($data);
     }
-    
+
     public function detail(Request $request, JwtAuthService $jwt_auth_service, $id = null) {
         //Obtener el token y comprobar si es correcto
-        //Obtener la identificación de usuario
-        //Obtener el video con respecto al ID
-        //Comprobar si el vidoe existe y es propiedad del usuario
+        $token = $request->headers->get('Authorization');
+        $checkToken = $jwt_auth_service->checkToken($token);
+
         //Array por defecto para devolver
         $data = [
             'status' => 'error',
@@ -177,6 +177,31 @@ class VideoController extends AbstractController
             'message' => 'Video no encontrado',
             'id' => $id
         ];
+
+        //Si es correcto, hacer la actualización del usuario
+        if ($checkToken) {
+            //Obtener la identificación de usuario
+            $identity = $jwt_auth_service->checkToken($token, true);
+
+            //Obtener el video con respecto al ID
+            $doctrine = $this->getDoctrine();
+            $em = $doctrine->getManager();
+
+            $video_repo = $doctrine->getRepository(Video::class);
+            $video = $video_repo->findOneBy(array(
+                'id' => $id
+            ));
+
+            //Comprobar si el video existe y es propiedad del usuario
+            if($video && is_object($video) && $identity->sub == $video->getUser()->getId()) {
+                $data = [
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Video encontrado',
+                    'video' => $video
+                ];
+            }
+        }
 
         //DEvolver una respuesta
         return $this->responseJsonPersonalizado($data);
