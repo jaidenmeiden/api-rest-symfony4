@@ -59,13 +59,6 @@ class User implements \JsonSerializable
     private $role = 'NULL';
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true, options={"default"="NULL"})
-     */
-    private $description = 'NULL';
-
-    /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true, options={"default"="NULL"})
@@ -157,18 +150,6 @@ class User implements \JsonSerializable
     public function setRole(?string $role): self
     {
         $this->role = $role;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
