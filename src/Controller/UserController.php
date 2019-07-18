@@ -240,7 +240,7 @@ class UserController extends AbstractController
 
                         //Array por defecto para devolver
                         $data = [
-                            'status' => 'sussess',
+                            'status' => 'success',
                             'code' => 200,
                             'message' => 'Usuario actualizado',
                             'user' => $user
